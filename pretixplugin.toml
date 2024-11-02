@@ -1,0 +1,5 @@
+[plugin]
+package = "pretix-orange-money-mdg"
+modules = [ "pretix_orange_money_mdg" ]
+marketplace_name = "orange-money-mdg"
+
