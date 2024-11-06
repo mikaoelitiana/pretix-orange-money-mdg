@@ -31,4 +31,12 @@ def register_global_settings(sender, **kwargs):
             label=_('Orange Money Madagascar: Client secret'),
             required=False
         )),
+        ('payment_orange_money_mdg_endpoint', forms.ChoiceField(
+            label=_('Orange Money Madagascar: Endpoint'),
+            initial='live',
+            choices=(
+                ('sandbox', 'Sandbox'),
+                ('live', 'Live'),
+            ),
+        )),
     ])
