@@ -15,7 +15,7 @@ def register_payment_provider(sender, **kwargs):
 @receiver(register_global_settings, dispatch_uid='payment_orange_money_mdg_global_settings')
 def register_global_settings(sender, **kwargs):
     return OrderedDict([
-        ('payment_orange_money_mdg_merchant_key', forms.CharField(
+        ('payment_orange_money_mdg_merchant_key', SecretKeySettingsField(
             label=_('Orange Money Madagascar: Merchant Key'),
             required=False,
         )),
@@ -28,7 +28,7 @@ def register_global_settings(sender, **kwargs):
             required=False,
         )),
         ('payment_orange_money_mdg_client_secret', SecretKeySettingsField(
-            label=_('Orange Money Madagascar Endpoint'),
+            label=_('Orange Money Madagascar: Client secret'),
             required=False
         )),
     ])
