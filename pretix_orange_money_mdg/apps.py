@@ -8,7 +8,7 @@ except ImportError:
     raise RuntimeError("Please use pretix 2.7 or above to run this plugin!")
 
 
-class PluginApp(PluginConfig):
+class OrangeMoneyMadagascarPluginApp(PluginConfig):
     default = True
     name = "pretix_orange_money_mdg"
     verbose_name = "Orange Money Madagascar"
