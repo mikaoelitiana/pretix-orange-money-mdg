@@ -2,7 +2,7 @@ from collections import OrderedDict
 
 from django import forms
 from django.dispatch import receiver
-from django.utils.translation import gettext_lazy as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _
 
 from pretix.base.forms import SecretKeySettingsField
 from pretix.base.signals import register_payment_providers, register_global_settings
