@@ -2,7 +2,7 @@ from django.urls import include, re_path
 
 from .views import (
     abort,
-    redirect_view,
+    notify,
     success,
 )
 
@@ -12,8 +12,8 @@ event_patterns = [
         include(
             [
                 re_path(r"^abort/$", abort, name="abort"),
-                re_path(r"^return/$", success, name="return"),
-                re_path(r"^redirect/$", redirect_view, name="redirect"),
+                re_path(r"^success/$", success, name="success"),
+                re_path(r"^notify/$", notify, name="notify"),
             ]
         ),
     ),

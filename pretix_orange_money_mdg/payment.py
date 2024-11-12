@@ -21,8 +21,6 @@ class OrangeMoneyMadagascar(BasePaymentProvider):
     payment_form_fields = OrderedDict([])
     base_url = "https://api.orange.com/"
     url_prefix = ""
-    access_token = ""
-    payment_url = ""
     execute_payment_needs_user = True
 
     def __init__(self, event: Event):
@@ -56,7 +54,7 @@ class OrangeMoneyMadagascar(BasePaymentProvider):
         self.init_api(request)
         if self.access_token:
             self.prepare_payment(cart, request)
-            if self.payment_url:
+            if request.session.get("orange_money_mdg_payment_url"):
                 return True
         return False
 
@@ -68,9 +66,11 @@ class OrangeMoneyMadagascar(BasePaymentProvider):
             else self.event.currency,
             "order_id": f"order_{get_random_string(length=25)}_{time.time()}",
             "amount": float(cart["total"]),
-            "notif_url": "http://www.merchant-example2.org/notif",
+            "notif_url": build_absolute_uri(
+                request.event, "plugins:pretix_orange_money_mdg:notify", kwargs={}
+            ),
             "return_url": build_absolute_uri(
-                request.event, "plugins:pretix_orange_money_mdg:return", kwargs={}
+                request.event, "plugins:pretix_orange_money_mdg:success", kwargs={}
             ),
             "cancel_url": build_absolute_uri(
                 request.event, "plugins:pretix_orange_money_mdg:abort", kwargs={}
@@ -87,16 +87,12 @@ class OrangeMoneyMadagascar(BasePaymentProvider):
         )
         response_json = response.json()
         if response_json["message"] == "OK":
-            self.payment_url = response_json["payment_url"]
-            self.pay_token = response_json["pay_token"]
             request.session["orange_money_mdg_payment_url"] = response_json[
                 "payment_url"
             ]
             request.session["orange_money_mdg_pay_token"] = response_json["pay_token"]
-            pprint(response_json)
-            pprint(request.session.get("orange_money_mdg_payment_url"))
 
-    def checkout_confirm_render(self, request) -> str:
+    def checkout_confirm_render(self, request):
         return _("You will be redirected to OrangeMoney website")
 
     def payment_is_valid_session(self, request):
