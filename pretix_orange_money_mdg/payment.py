@@ -1,12 +1,9 @@
-from collections import OrderedDict
-
 import requests
 import time
-
+from collections import OrderedDict
 from django.http import HttpRequest
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext as _
-
 from pretix.base.models import Event
 from pretix.base.payment import BasePaymentProvider, OrderPayment
 from pretix.base.settings import SettingsSandbox

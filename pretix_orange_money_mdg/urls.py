@@ -1,10 +1,6 @@
 from django.urls import include, re_path
 
-from .views import (
-    abort,
-    notify,
-    success,
-)
+from .views import abort, notify, success
 
 event_patterns = [
     re_path(

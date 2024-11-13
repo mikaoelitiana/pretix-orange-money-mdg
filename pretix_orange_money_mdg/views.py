@@ -1,17 +1,13 @@
-import logging
 import json
-
+import logging
 from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
-from django.http import HttpResponse
 from django_scopes import scopes_disabled
-
-from pretix.base.models import (
-    Order,
-)
+from pretix.base.models import Order
 from pretix.multidomain.urlreverse import eventreverse
 
 from pretix_orange_money_mdg.models import ReferencedOrangeMoneyObject

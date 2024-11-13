@@ -1,11 +1,9 @@
 from collections import OrderedDict
-
 from django import forms
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
-
 from pretix.base.forms import SecretKeySettingsField
-from pretix.base.signals import register_payment_providers, register_global_settings
+from pretix.base.signals import register_global_settings, register_payment_providers
 
 
 @receiver(register_payment_providers, dispatch_uid="payment_orange_money_mdg")
