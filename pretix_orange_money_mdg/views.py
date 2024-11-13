@@ -1,4 +1,5 @@
 import logging
+import json
 from pprint import pprint
 
 from django.contrib import messages
@@ -6,6 +7,7 @@ from django.shortcuts import redirect
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.http import HttpResponse
 from django_scopes import scopes_disabled
 
 from pretix.base.models import (
@@ -21,13 +23,12 @@ logger = logging.getLogger("pretix.plugins.paypal2")
 @require_POST
 @scopes_disabled()
 def notify(request, *args, **kwargs):
-    # pprint(request.session.get("orange_money_mdg_pay_token"))
-    # pprint(request.POST.get("notif_token"))
-    pprint(request.POST)
-    return "Payment sucessful"
+    payload = json.loads(request.body)
+    return HttpResponse(f"Payment {payload.status}")
 
 
 def success(request, *args, **kwargs):
+    pprint(request.session)
     if request.session.get("payment_paypal_payment"):
         payment = OrderPayment.objects.get(
             pk=request.session.get("payment_paypal_payment")
