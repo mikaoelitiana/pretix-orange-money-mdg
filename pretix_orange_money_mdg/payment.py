@@ -14,10 +14,12 @@ from pretix.base.payment import BasePaymentProvider, OrderPayment
 from pretix.base.settings import SettingsSandbox
 from pretix.multidomain.urlreverse import build_absolute_uri
 
+from pretix_orange_money_mdg.models import ReferencedOrangeMoneyObject
+
 
 class OrangeMoneyMadagascar(BasePaymentProvider):
     identifier = "orange_money_madagascar"
-    verbose_name = _("Orange Money Madagascar")
+    verbose_name = _("OrangeMoney Madagascar")
     payment_form_fields = OrderedDict([])
     base_url = "https://api.orange.com/"
     url_prefix = ""
@@ -99,4 +101,10 @@ class OrangeMoneyMadagascar(BasePaymentProvider):
         return True
 
     def execute_payment(self, request: HttpRequest, payment: OrderPayment):
+        reference = ReferencedOrangeMoneyObject(
+            payment=payment,
+            reference=request.session["orange_money_mdg_pay_token"],
+            order=payment.order,
+        )
+        reference.save()
         return request.session.get("orange_money_mdg_payment_url")
