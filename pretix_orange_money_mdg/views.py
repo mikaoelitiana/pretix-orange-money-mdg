@@ -23,7 +23,7 @@ logger = logging.getLogger("pretix.plugins.paypal2")
 @require_POST
 @scopes_disabled()
 def notify(request, *args, **kwargs):
-    # OrangeMoney notify us when a payment succeds
+    # Orange Money notifies us when a payment succeds
     # cf. https://developer.orange.com/apis/om-webpay-dev/getting-started#33-transaction-notification
     # The body object looks like this :
     # {
@@ -74,7 +74,7 @@ def success(request, *args, **kwargs):
 
 
 def abort(request, *args, **kwargs):
-    messages.error(request, _("It looks like you canceled the OrangeMoney payment"))
+    messages.error(request, _("It looks like you canceled the Orange Money payment"))
     return redirect(
         eventreverse(
             request.event,

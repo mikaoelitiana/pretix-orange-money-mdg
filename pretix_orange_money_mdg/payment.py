@@ -19,7 +19,7 @@ from pretix_orange_money_mdg.models import ReferencedOrangeMoneyObject
 
 class OrangeMoneyMadagascar(BasePaymentProvider):
     identifier = "orange_money_madagascar"
-    verbose_name = _("OrangeMoney Madagascar")
+    verbose_name = _("Orange Money Madagascar")
     payment_form_fields = OrderedDict([])
     base_url = "https://api.orange.com/"
     url_prefix = ""
@@ -100,7 +100,7 @@ class OrangeMoneyMadagascar(BasePaymentProvider):
             ]
 
     def checkout_confirm_render(self, request):
-        return _("You will be redirected to OrangeMoney website")
+        return _("You will be redirected to Orange Money website")
 
     def payment_is_valid_session(self, request):
         return True
