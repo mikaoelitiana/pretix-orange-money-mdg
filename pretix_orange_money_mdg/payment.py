@@ -3,11 +3,9 @@ from collections import OrderedDict
 import requests
 import time
 
-from pprint import pprint
-
 from django.http import HttpRequest
 from django.utils.crypto import get_random_string
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext as _
 
 from pretix.base.models import Event
 from pretix.base.payment import BasePaymentProvider, OrderPayment
@@ -113,4 +111,4 @@ class OrangeMoneyMadagascar(BasePaymentProvider):
             order=payment.order,
         )
         reference.save()
-        return request.session.get("orange_money_mdg_payment_url")
+        return request.session.get("orange_money_mdg_payment_url") or ""
