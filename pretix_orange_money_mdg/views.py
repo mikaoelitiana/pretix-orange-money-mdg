@@ -1,6 +1,5 @@
 import logging
 import json
-from pprint import pprint
 
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -12,7 +11,6 @@ from django_scopes import scopes_disabled
 
 from pretix.base.models import (
     Order,
-    OrderPayment,
 )
 from pretix.multidomain.urlreverse import eventreverse
 
@@ -25,8 +23,15 @@ logger = logging.getLogger("pretix.plugins.paypal2")
 @require_POST
 @scopes_disabled()
 def notify(request, *args, **kwargs):
+    # OrangeMoney notify us when a payment succeds
+    # cf. https://developer.orange.com/apis/om-webpay-dev/getting-started#33-transaction-notification
+    # The body object looks like this :
+    # {
+    #    "status":"SUCCESS",
+    #    "notif_token":"dd497bda3b250e536186fc0663f32f40",
+    #    "txnid": "MP150709.1341.A00073"
+    # }
     payload = json.loads(request.body)
-    pprint(payload)
     # Try to find the payment from a given notif_token
     reference = ReferencedOrangeMoneyObject.objects.get(
         reference=payload["notif_token"]
@@ -39,11 +44,13 @@ def notify(request, *args, **kwargs):
 
 
 def success(request, *args, **kwargs):
-    pprint(request.session)
-    if request.session.get("payment_paypal_payment"):
-        payment = OrderPayment.objects.get(
-            pk=request.session.get("payment_paypal_payment")
+    # From the stored notif_token value in the session, look for the reference object
+    # and the related payment
+    if request.session.get("orange_money_mdg_notif_token"):
+        reference = ReferencedOrangeMoneyObject.objects.get(
+            reference=request.session.get("orange_money_mdg_notif_token")
         )
+        payment = reference.payment
     else:
         payment = None
 
@@ -57,7 +64,13 @@ def success(request, *args, **kwargs):
             + ("?paid=yes" if payment.order.status == Order.STATUS_PAID else "")
         )
     else:
-        return False
+        return redirect(
+            eventreverse(
+                request.event,
+                "presale:event.order",
+                kwargs={},
+            )
+        )
 
 
 def abort(request, *args, **kwargs):
