@@ -37,7 +37,7 @@ def notify(request, *args, **kwargs):
         reference=payload["notif_token"]
     )
     # If payment is found, confirm it
-    if reference.payment:
+    if reference.payment and payload["status"] == "SUCCESS":
         reference.payment.confirm()
         return HttpResponse(f"Payment for order {reference.payment.order} confirmed.")
     return HttpResponse("Payment not found", status=404)
@@ -75,3 +75,10 @@ def success(request, *args, **kwargs):
 
 def abort(request, *args, **kwargs):
     messages.error(request, _("It looks like you canceled the OrangeMoney payment"))
+    return redirect(
+        eventreverse(
+            request.event,
+            "presale:event.checkout",
+            kwargs={"step": "payment"},
+        )
+    )

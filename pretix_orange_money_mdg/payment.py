@@ -24,6 +24,9 @@ class OrangeMoneyMadagascar(BasePaymentProvider):
     base_url = "https://api.orange.com/"
     url_prefix = ""
     execute_payment_needs_user = True
+    test_mode_message = _(
+        "No real money will be used for testing. You can check https://developer.orange.com/apis/om-webpay-dev/getting-started for more details on test payments."
+    )
 
     def __init__(self, event: Event):
         super().__init__(event)
