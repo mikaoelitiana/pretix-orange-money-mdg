@@ -16,6 +16,8 @@ from pretix.base.models import (
 )
 from pretix.multidomain.urlreverse import eventreverse
 
+from pretix_orange_money_mdg.models import ReferencedOrangeMoneyObject
+
 logger = logging.getLogger("pretix.plugins.paypal2")
 
 
@@ -24,7 +26,16 @@ logger = logging.getLogger("pretix.plugins.paypal2")
 @scopes_disabled()
 def notify(request, *args, **kwargs):
     payload = json.loads(request.body)
-    return HttpResponse(f"Payment {payload.status}")
+    pprint(payload)
+    # Try to find the payment from a given notif_token
+    reference = ReferencedOrangeMoneyObject.objects.get(
+        reference=payload["notif_token"]
+    )
+    # If payment is found, confirm it
+    if reference.payment:
+        reference.payment.confirm()
+        return HttpResponse(f"Payment for order {reference.payment.order} confirmed.")
+    return HttpResponse("Payment not found", status=404)
 
 
 def success(request, *args, **kwargs):

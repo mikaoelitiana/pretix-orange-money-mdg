@@ -92,7 +92,9 @@ class OrangeMoneyMadagascar(BasePaymentProvider):
             request.session["orange_money_mdg_payment_url"] = response_json[
                 "payment_url"
             ]
-            request.session["orange_money_mdg_pay_token"] = response_json["pay_token"]
+            request.session["orange_money_mdg_notif_token"] = response_json[
+                "notif_token"
+            ]
 
     def checkout_confirm_render(self, request):
         return _("You will be redirected to OrangeMoney website")
@@ -101,9 +103,10 @@ class OrangeMoneyMadagascar(BasePaymentProvider):
         return True
 
     def execute_payment(self, request: HttpRequest, payment: OrderPayment):
+        # This will be used to find the payment on notify
         reference = ReferencedOrangeMoneyObject(
             payment=payment,
-            reference=request.session["orange_money_mdg_pay_token"],
+            reference=request.session["orange_money_mdg_notif_token"],
             order=payment.order,
         )
         reference.save()

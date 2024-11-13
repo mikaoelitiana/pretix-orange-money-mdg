@@ -8,7 +8,7 @@ from .views import (
 
 event_patterns = [
     re_path(
-        r"^oramge_money_mdg/",
+        r"^orange_money_mdg/",
         include(
             [
                 re_path(r"^abort/$", abort, name="abort"),
